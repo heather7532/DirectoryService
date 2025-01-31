@@ -1,0 +1,15 @@
+db:
+  host: "localhost"
+  port: 5432
+  user: "dba"
+  password: "start123"
+  dbname: "svcregistry"
+  sslmode: "disable"
+
+server:
+    port: 8080
+    host: "localhost"
+    ssl-enabled: false
+    ssl-cert: "cert.pem"
+    ssl-key: "key.pem"
+

@@ -1,12 +1,12 @@
-# Data Service Finder
+# INSERT NAME HERE
 
 # Introduction
-The Data Service Finder is a simple framework that allows you to publish and discover services in a distributed environment. It is based on the concept of a service registry, which is a database of services that can be queried by clients to find the services they need. The Data Service Finder is designed to be lightweight and easy to use, with a minimal set of features that are sufficient for most use cases.
+The TBD is a simple framework that allows you to publish and discover services in a distributed environment. It is based on the concept of a service registry, which is a database of services that can be queried by clients to find the services they need. The Data Service Finder is designed to be lightweight and easy to use, with a minimal set of features that are sufficient for most use cases.
 A service should be easy to deploy.  
 + It should be easy to find.
 + It should offer support for versioned and flexible APIs using multiple protocols.
 + It should be easy to scale.
-+ It should be easy to monitize. 
++ It should be able to be monitized and secured
 
 This project will dust off a few old ideas, modernize them, and put them together in a new way.  
 Besides being simple, lightweight, and can be used by a single developer or a large enterprise, it will be open source and free to use.
@@ -14,7 +14,7 @@ This will also provide AI and ML services to help with the discovery and selecti
 
 ## Architecture
 
-The Data Service Finder is composed of the following components:
+The TBD is composed of the following components:
 ### Service Registry
 + Registry database(s)
 + Service registration Tool and API
@@ -29,7 +29,7 @@ The Data Service Finder is composed of the following components:
 
 
 ## SDK Support
-The Data Service Finder will provide SDKs for the following languages:
+The TBD will provide SDKs for the following languages:
 + Python
 + Go
 + Java 11+
@@ -57,6 +57,7 @@ Registration of a service does not mean a service running/available, but a servi
 + Security Information (TBD)
 + Client Rating (5-star system)
 #### Instance Registration Attributes (when service starts)
++ Service ID
 + Service Instance ID
 + Service Version (SemVer)
 + Service Host/Port/URL
@@ -104,3 +105,13 @@ The service owner is responsible for the following:
 + Providing a version number for the service
 + Providing a lat/lon for the service (optional)
 
+## Enterprise Level Features
+The Data Service Finder will provide the following enterprise level features:
++ Local instance management/monitoring tool(s)
+    + Auto start/stop of services
+    + Health check monitoring
+    + Restart services that are unhealthy
+    + Metrics SDK add on
++ Replication of the registry between different cloud providers 
++ Support for monitizing services and billing
++ Support for user managed security and encryption
