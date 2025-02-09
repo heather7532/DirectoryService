@@ -4,6 +4,7 @@ go 1.23
 
 require (
 	github.com/google/uuid v1.4.0
+	github.com/gorilla/mux v1.8.1
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0

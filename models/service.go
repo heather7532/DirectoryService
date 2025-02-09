@@ -1,4 +1,4 @@
-package db
+package models
 
 import (
 	"github.com/google/uuid"
@@ -15,5 +15,6 @@ type Service struct {
 	ClientRating     float64   `json:"client_rating"`
 	TransactionCount int64     `json:"transaction_count,omitempty"`
 	AvgResponseTime  float64   `json:"average_response_time,omitempty"`
-	LastUpdated      time.Time `json:"last_updated,omitempty"`
+	CreatedAt        time.Time `json:"created_at,omitempty"`
+	UpdatedAt        time.Time `json:"updated_at,omitempty"`
 }

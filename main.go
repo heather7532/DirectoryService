@@ -1,59 +1,54 @@
 package main
 
 import (
-	"context"
+	"DirectoryService/cfg"
+	"DirectoryService/handlers"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 	"time"
 
-	"DirectoryService/cfg"
 	"DirectoryService/db"
 )
 
 func main() {
-	config := &cfg.Config{
-		DB: cfg.DBConfig{
-			User:     "user",
-			Password: "password",
-			Host:     "localhost",
-			Port:     5432,
-			DBName:   "directoryservice",
-			SSLMode:  "disable",
-		},
+	// Set up database connection
+	config, err := cfg.LoadConfig()
+	if err != nil {
+		log.Fatalf("Failed to load cfg: %v", err)
 	}
 
-	// Initialize the database connection
 	pool, err := db.ConnectDB(config)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer pool.Close()
+	defer pool.Close() // Ensure connection pool is closed when the service shuts down
 
-	// Create RSData instance
-	rsData := db.NewRSData(pool)
+	fmt.Println("Database connection established")
 
-	// Context with timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	// Create DbCtx instance and inject into DbCtx
+	server := handlers.NewServer(pool) // Inject DbCtx into DbCtx struct
 
-	// Example: Insert a service
-	service := db.Service{
-		ServiceID:   "service123",
-		ServiceName: "Example Service",
-		Metadata:    map[string]string{"version": "1.0"},
+	// Set up HTTP routes
+	router := server.NewRouter()
+
+	// Start HTTP server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default port
 	}
 
-	if err := rsData.InsertService(ctx, service); err != nil {
-		log.Fatalf("Failed to insert service: %v", err)
+	srv := &http.Server{
+		Addr:         ":" + port,
+		Handler:      router,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
 
-	// Example: Retrieve all services
-	services, err := rsData.ListServices(ctx)
-	if err != nil {
-		log.Fatalf("Failed to list services: %v", err)
-	}
-
-	for _, svc := range services {
-		fmt.Printf("Service: %+v\n", svc)
+	log.Printf("DbCtx running on port %s", port)
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("DbCtx error: %v", err)
 	}
 }
