@@ -40,21 +40,28 @@ func ConnectDB(config *cfg.Config) (*pgxpool.Pool, error) {
 func (s *DbCtx) RegisterService(ctx context.Context, service models.Service) (
 	*models.Service, error,
 ) {
+	service.ServiceID = uuid.New()
+	service.CreatedAt = time.Now().UTC()
+
 	query := `
-		INSERT INTO r1.services (service_id, name, description, owner_info, industry_category, client_rating)
-		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING service_id, name, description, owner_info, industry_category, client_rating, created_at, updated_at
+		INSERT INTO r1.services (service_id, name, description, owner_info, industry_category, 
+								 client_rating, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING service_id, name, description, owner_info, industry_category, client_rating, 
+				  created_at, updated_at
 	`
 
 	var newService models.Service
 	err := s.Pool.QueryRow(
-		ctx, query, service.ServiceID, service.Name, service.Description, service.OwnerInfo,
-		service.IndustryCategory, service.ClientRating,
+		ctx, query, service.ServiceID, service.Name, service.Description,
+		service.OwnerInfo, service.IndustryCategory, service.ClientRating, service.CreatedAt,
+		service.UpdatedAt,
 	).Scan(
 		&newService.ServiceID, &newService.Name, &newService.Description, &newService.OwnerInfo,
 		&newService.IndustryCategory, &newService.ClientRating, &newService.CreatedAt,
 		&newService.UpdatedAt,
 	)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to insert service: %w", err)
 	}
@@ -66,6 +73,9 @@ func (s *DbCtx) RegisterService(ctx context.Context, service models.Service) (
 func (s *DbCtx) UpdateService(ctx context.Context, service models.Service) (
 	*models.Service, error,
 ) {
+	service.ServiceID = uuid.New()
+	service.CreatedAt = time.Now().UTC()
+
 	query := `
 		UPDATE r1.services
 		SET name = $1, description = $2, owner_info = $3, industry_category = $4, client_rating = $5, updated_at = CURRENT_TIMESTAMP
@@ -194,26 +204,33 @@ func (s *DbCtx) CreateServiceInstance(
 	instance.LastChecked = time.Now().UTC()
 
 	query := `
-  INSERT INTO r1.service_instances (
-   service_id, instance_id, version, host, port, url, api_spec, latitude, longitude, health_status, created_at, last_checked
-  ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-  RETURNING instance_id
- `
+		INSERT INTO r1.service_instances (
+			service_id, instance_id, version, host, port, url, api_spec, latitude, longitude, health_status, created_at, last_checked
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+		RETURNING service_id, instance_id, version, host, port, url, api_spec, latitude, longitude, health_status, created_at, last_checked
+	`
 
-	var instanceID uuid.UUID
+	var newInstance models.ServiceInstance
+	var urlString string
+
 	err := s.Pool.QueryRow(
 		ctx, query, instance.ServiceID, instance.InstanceID, instance.Version, instance.Host,
 		instance.Port,
-		instance.Url.String(), instance.ApiSpec, instance.Latitude, instance.Longitude,
-		instance.HealthStatus,
-		instance.CreatedAt, instance.LastChecked,
-	).Scan(&instanceID)
+		urlString,
+		instance.ApiSpec, instance.Latitude,
+		instance.Longitude,
+		instance.HealthStatus, instance.CreatedAt, instance.LastChecked,
+	).Scan(
+		&newInstance.ServiceID, &newInstance.InstanceID, &newInstance.Version, &newInstance.Host,
+		&newInstance.Port, &newInstance.Url, &newInstance.ApiSpec, &newInstance.Latitude,
+		&newInstance.Longitude, &newInstance.HealthStatus, &newInstance.CreatedAt,
+		&newInstance.LastChecked,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create service instance: %w", err)
 	}
 
-	instance.InstanceID = instanceID
-	return &instance, nil
+	return &newInstance, nil
 }
 
 // GetServiceInstance retrieves a instanceID.

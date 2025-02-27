@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"net/url"
 	"time"
 )
 
@@ -13,7 +12,7 @@ type ServiceInstance struct {
 	Version      string       `json:"version"`
 	Host         string       `json:"host"`
 	Port         int          `json:"port"`
-	Url          url.URL      `json:"url"`
+	Url          string       `json:"url"`
 	Latitude     float64      `json:"latitude"`
 	Longitude    float64      `json:"longitude"`
 	HealthStatus HealthStatus `json:"health_status"`

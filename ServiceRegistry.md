@@ -1,7 +1,7 @@
 # INSERT NAME HERE
 
 # Introduction
-The TBD is a simple framework that allows you to publish and discover services in a distributed environment. It is based on the concept of a service registry, which is a database of services that can be queried by clients to find the services they need. The Data Service Finder is designed to be lightweight and easy to use, with a minimal set of features that are sufficient for most use cases.
+The TBD is a simple framework that allows you to publish and discover services in a distributed environment. It is based on the concept of a service registry, which is a database of services that can be queried by clients to find the services they need. The TBD is designed to be lightweight and easy to use, with a minimal set of features that are sufficient for most use cases.
 A service should be easy to deploy.  
 + It should be easy to find.
 + It should offer support for versioned and flexible APIs using multiple protocols.
@@ -9,8 +9,8 @@ A service should be easy to deploy.
 + It should be able to be monitized and secured
 
 This project will dust off a few old ideas, modernize them, and put them together in a new way.  
-Besides being simple, lightweight, and can be used by a single developer or a large enterprise, it will be open source and free to use.
-This will also provide AI and ML services to help with the discovery and selection of services for Retrieval-Augmented Generation (RAG) and other AI/ML applications.
+Besides being simple, lightweight, and usable by a single developer or a large enterprise, it will be open source.
+This will provide AI and ML services the ability to discover and select services for Retrieval-Augmented Generation (RAG) and other AI/ML applications.
 
 ## Architecture
 
@@ -45,7 +45,7 @@ Intially, it will support HTTP/HTTPS. gRPC may be added later.
 There will be one or more service registries.  Public registries will require at least two instance (or more).  This will be backed by a PostgreSQL database.  Replication will be specific to the deployment for registries.  For instance, if deployed in AWS, it will use RDS Multi-AZ.  If deployed in Azure, it will use Azure SQL Database with Geo-Replication.  If deployed in Google Cloud, it will use Cloud SQL with High Availability.  
 A service can be registered with any registry, and it shall be propagated to all other registries in the Registry Group. Service Registry(s) can be private or public.
 Registry Services need not all be owned by the same entity, but they must cooperate with other members of the registry group.  The registry group will come from a bootstrap file that is loaded into the registry.  The registry group will be a list of registry URLs.
-Registration of a service does not mean a service running/available, but a service must be registered to run.
+Registration of a service is required before a service instance can be started.
 
 #### Primary Registration Attributes
 + Service ID
@@ -71,11 +71,11 @@ Registration of a service does not mean a service running/available, but a servi
 There will be a website to view, register new services, update information, and delete services.  Users will also be able to leave reviews of services that will be used to rate the service.  The website will be a React app that will use the registry API to interact with the registry.
 
 
-### Service Startup
-When a service starts, it must update the registry.
-The registry will start monitoring the service periodically checking health.  
-If a service is unhealthy, it will be marked as down in the registry.
-It is up to the service owner to manage the environment the service is executing in.  The registry will only monitor the service using the health check API.
+### Service Instance Startup
+When a service instance starts, it must update the registry.
+The registry will start monitoring the service instance(s) periodically checking health.  
+If a service instance is unhealthy, it will be marked as down in the registry.
+It is up to the service owner to manage the environment the service instance is executing in.  The registry will only monitor the service instance using the health check API.
 
 
 ### Client 

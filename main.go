@@ -47,8 +47,8 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	log.Printf("DbCtx running on port %s", port)
+	log.Printf("Registry running on port %s", port)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("DbCtx error: %v", err)
+		log.Fatalf("Registry error: %v", err)
 	}
 }
